@@ -7,6 +7,7 @@ let
       pname = "Firefox";
 
       buildInputs = [ super.pkgs.undmg ];
+      nativeBuildInputs = [ super.pkgs.makeBinaryWrapper ];
       sourceRoot = ".";
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
@@ -16,6 +17,10 @@ let
         cp -r Firefox*.app "$out/Applications/"
 
         runHook postInstall
+      '';
+
+      postInstall = ''
+        wrapProgram $out/Applications/Firefox.app/Contents/MacOS/firefox --set MOZ_LEGACY_PROFILES 1
       '';
 
       src = super.fetchurl {
